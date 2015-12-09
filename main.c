@@ -82,7 +82,6 @@ uint8_t filtr_1 (uint8_t in)
 	uint16_t out = in * (256 - WLag) + ((WLag * ((uint32_t)lastOut)/256));
 	lastOut = out;
 	return out/256; 
-	//return in;
 }
 #else
 uint8_t filtr_1 (uint8_t in)
@@ -131,9 +130,8 @@ inline uint8_t findSoundFront(void)
 	uint8_t  ret=0;
 	uint8_t  sound_val=(uint8_t)(adc_microphone>>2);
 
-	if(sound_val>/*SOUND_FRONT_VAL*/triggerSoundLevel)
+	if(sound_val>triggerSoundLevel)
 	{
-		//adc_microphone_prev=adc_microphone;		
 		ret = 1;
 	}
 
@@ -144,6 +142,14 @@ ISR(TIM0_OVF_vect)
 {
 	static uint8_t ms10_timer = MS_10;
 	uint16_t val;
+
+	cli();
+	ADMUX&=~(0x3);
+    ADMUX|=ADC3;
+	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
+	sei();
+
+	PORTB |= _BV(0);
 
 	ms10_timer--;
 	if(ms10_timer == 0)
@@ -162,11 +168,7 @@ ISR(TIM0_OVF_vect)
 	}
 	photoLevelLPF = filtr_1(photoLevel);
 
-	cli();
-	ADMUX&=~(0x3);
-    ADMUX|=ADC3;
-	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
-	sei();
+
 	
 	evt.tic = 1;
 }
@@ -181,6 +183,7 @@ ISR(ADC_vect)
 	{
 		case ADC3:
 		{
+			PORTB &= ~_BV(0);
 			adc_photosensor=ADC;
 
 			mirophone_cycle=0;
@@ -215,12 +218,8 @@ void stateMashine(void)
 {
 	static uint16_t timer = 200;	// POWER_ON mode timer
 	
-
-	PORTB &= ~_BV(0);
-
 	if(photoLevelLPF > (triggerPhotoLevel + HYST))
 	{	// при освешенности большей порога однозначно выключаем свет из любого режима
-    	PORTB |= _BV(0);
 		setLightBright(BRIGHT_0);    // turn the LED off
 		mode = MODE_OFF;
 	}

@@ -213,8 +213,8 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x0000009c                startT1_div8_fastPWM_B
                 0x000000ae                setLightBright
                 0x000000d6                __vector_3
-                0x00000174                __vector_9
-                0x000001e4                stateMashine
+                0x00000176                __vector_9
+                0x000001e8                stateMashine
                 0x000002c0                main
  .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
  .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
