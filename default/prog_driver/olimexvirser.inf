@@ -1,0 +1,108 @@
+;**************************************************************************** 
+; Olimex USB Virtual Serial Port Driver.
+;
+; Copyright by Olimex Ltd. All rights reserved. 
+;
+; Changelog:
+;	1.01.0000.0 : Initial release.
+;	1.02.0000.0 : Added MOD-RFID125 products.
+;	1.03.0000.0 : Added MOD-RFID1356 products.
+;	1.04.0000.0 : Added sections for Windows 64 compatibility (from MSDN)
+;	1.05.0000.0 : Minor fixes for Windows 7 x86_64
+;
+;**************************************************************************** 
+
+
+[Version]
+Signature="$Windows NT$"
+Class=Ports
+ClassGUID={4D36E978-E325-11CE-BFC1-08002BE10318}
+Provider=%OLIMEX%
+LayoutFile=layout.inf
+CatalogFile=olimexvirser.cat
+DriverVer=06/29/2008,1.05.0000.0
+
+[Manufacturer]
+%OLIMEX%=OLIMEX,NT,NTamd64
+
+[OLIMEX.NT]
+%OLIMEX_CDC_AVRISP_TINY%=OlimexVirSer, USB\VID_15ba&PID_0009
+%OLIMEX_CDC_AVRISP_TINY_BL%=OlimexVirSer, USB\VID_15ba&PID_000a
+%OLIMEX_CDC_AVRISP%=OlimexVirSer, USB\VID_15ba&PID_000c
+%OLIMEX_CDC_AVRISP_BL%=OlimexVirSer, USB\VID_15ba&PID_000d
+%OLIMEX_CDC_MOD_RFID125%=OlimexVirSer, USB\VID_15ba&PID_000f
+%OLIMEX_CDC_MOD_RFID125_BL%=OlimexVirSer, USB\VID_15ba&PID_0011
+%OLIMEX_CDC_MOD_RFID125_BOX%=OlimexVirSer, USB\VID_15ba&PID_0016
+%OLIMEX_CDC_MOD_RFID125_BOX_BL%=OlimexVirSer, USB\VID_15ba&PID_0018
+%OLIMEX_CDC_MOD_RFID1356%=OlimexVirSer, USB\VID_15ba&PID_001c
+%OLIMEX_CDC_MOD_RFID1356_BL%=OlimexVirSer, USB\VID_15ba&PID_001d
+
+[OLIMEX.NTamd64]
+%OLIMEX_CDC_AVRISP_TINY%=OlimexVirSer, USB\VID_15ba&PID_0009
+%OLIMEX_CDC_AVRISP_TINY_BL%=OlimexVirSer, USB\VID_15ba&PID_000a
+%OLIMEX_CDC_AVRISP%=OlimexVirSer, USB\VID_15ba&PID_000c
+%OLIMEX_CDC_AVRISP_BL%=OlimexVirSer, USB\VID_15ba&PID_000d
+%OLIMEX_CDC_MOD_RFID125%=OlimexVirSer, USB\VID_15ba&PID_000f
+%OLIMEX_CDC_MOD_RFID125_BL%=OlimexVirSer, USB\VID_15ba&PID_0011
+%OLIMEX_CDC_MOD_RFID125_BOX%=OlimexVirSer, USB\VID_15ba&PID_0016
+%OLIMEX_CDC_MOD_RFID125_BOX_BL%=OlimexVirSer, USB\VID_15ba&PID_0018
+%OLIMEX_CDC_MOD_RFID1356%=OlimexVirSer, USB\VID_15ba&PID_001c
+%OLIMEX_CDC_MOD_RFID1356_BL%=OlimexVirSer, USB\VID_15ba&PID_001d
+
+[DestinationDirs]
+DefaultDestDir=12 
+
+;=============================================================================
+;  
+;=============================================================================
+
+[OlimexVirSer_Install.NTx86] 
+;Windows2000 
+include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection 
+AddReg=OlimexVirSer.NT.AddReg
+
+
+[OlimexVirSer.NT]
+include=mdmcpq.inf
+CopyFiles=FakeModemCopyFileSection 
+AddReg=OlimexVirSer.NT.AddReg
+
+[OlimexVirSer.NT.AddReg]
+HKR,,DevLoader,,*ntkern
+HKR,,NTMPDriver,,usbser.sys
+HKR,,EnumPropPages32,,"MsPorts.dll,SerialPortPropPageProvider"
+
+[OlimexVirSer.NT.Services]
+AddService=usbser, 0x00000002, OlimexVirSerServices.NT
+
+[OlimexVirSerServices.NT]
+DisplayName=%ServiceDescription%
+ServiceType=1
+StartType=3
+ErrorControl=1
+ServiceBinary=%12%\usbser.sys 
+
+
+;=============================================================================
+;  common
+;=============================================================================
+
+[SourceDisksNames]
+
+[SourceDisksFiles]
+
+
+[Strings]
+OLIMEX="Olimex Ltd."
+OLIMEX_CDC_AVRISP_TINY="Olimex Virtual COM - AVR-ISP500-TINY"
+OLIMEX_CDC_AVRISP_TINY_BL="Olimex AVR-ISP500-TINY XModem Bootloader"
+OLIMEX_CDC_AVRISP="Olimex Virtual COM - AVR-ISP500"
+OLIMEX_CDC_AVRISP_BL="Olimex AVR-ISP500 XModem Bootloader"
+OLIMEX_CDC_MOD_RFID125="Olimex Virtual COM - MOD-RFID125-USBSTICK"
+OLIMEX_CDC_MOD_RFID125_BL="Olimex MOD-RFID125-USBSTICK XModem Bootloader"
+OLIMEX_CDC_MOD_RFID125_BOX="Olimex Virtual COM - MOD-RFID125-BOX"
+OLIMEX_CDC_MOD_RFID125_BOX_BL="Olimex MOD-RFID125-BOX XModem Bootloader"
+OLIMEX_CDC_MOD_RFID1356="Olimex Virtual COM - MOD-RFID1356"
+OLIMEX_CDC_MOD_RFID1356_BL="Olimex MOD-RFID1356 XModem Bootloader"
+ServiceDescription="Olimex Virtual Serial Port Driver"

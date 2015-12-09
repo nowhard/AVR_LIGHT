@@ -1,0 +1,768 @@
+
+testLight.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000003f6  00000000  00000000  000000b4  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000004  00800060  000003f6  000004aa  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          0000001a  00800064  00800064  000004ae  2**0
+                  ALLOC
+  3 .eeprom       00000006  00810000  00810000  000004ae  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  4 .stab         00000888  00000000  00000000  000004b4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  5 .stabstr      000001af  00000000  00000000  00000d3c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_aranges 00000020  00000000  00000000  00000eeb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_pubnames 000001f2  00000000  00000000  00000f0b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_info   0000060d  00000000  00000000  000010fd  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_abbrev 0000020d  00000000  00000000  0000170a  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_line   0000039c  00000000  00000000  00001917  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_frame  00000080  00000000  00000000  00001cb4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_str    0000031e  00000000  00000000  00001d34  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 13 .debug_loc    00000088  00000000  00000000  00002052  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 14 .debug_pubtypes 00000043  00000000  00000000  000020da  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	09 c0       	rjmp	.+18     	; 0x14 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	67 c0       	rjmp	.+206    	; 0xd6 <__vector_3>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	b0 c0       	rjmp	.+352    	; 0x174 <__vector_9>
+
+00000014 <__ctors_end>:
+  14:	11 24       	eor	r1, r1
+  16:	1f be       	out	0x3f, r1	; 63
+  18:	cf e9       	ldi	r28, 0x9F	; 159
+  1a:	cd bf       	out	0x3d, r28	; 61
+
+0000001c <__do_copy_data>:
+  1c:	10 e0       	ldi	r17, 0x00	; 0
+  1e:	a0 e6       	ldi	r26, 0x60	; 96
+  20:	b0 e0       	ldi	r27, 0x00	; 0
+  22:	e6 ef       	ldi	r30, 0xF6	; 246
+  24:	f3 e0       	ldi	r31, 0x03	; 3
+  26:	02 c0       	rjmp	.+4      	; 0x2c <__do_copy_data+0x10>
+  28:	05 90       	lpm	r0, Z+
+  2a:	0d 92       	st	X+, r0
+  2c:	a4 36       	cpi	r26, 0x64	; 100
+  2e:	b1 07       	cpc	r27, r17
+  30:	d9 f7       	brne	.-10     	; 0x28 <__do_copy_data+0xc>
+
+00000032 <__do_clear_bss>:
+  32:	10 e0       	ldi	r17, 0x00	; 0
+  34:	a4 e6       	ldi	r26, 0x64	; 100
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	ae 37       	cpi	r26, 0x7E	; 126
+  3e:	b1 07       	cpc	r27, r17
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	3e d1       	rcall	.+636    	; 0x2c0 <main>
+  44:	d6 c1       	rjmp	.+940    	; 0x3f2 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <filtr_1>:
+
+
+// фильтр первого порядка с коэффициентом усиления = 256 (иначе на малых сигналах возможна самоблокировка фильтра по ограниченной разрядности)
+#if 1
+uint8_t filtr_1 (uint8_t in)
+{
+  48:	ef 92       	push	r14
+  4a:	ff 92       	push	r15
+  4c:	cf 93       	push	r28
+  4e:	df 93       	push	r29
+  50:	68 2f       	mov	r22, r24
+	static uint16_t lastOut=0;
+	uint16_t out = in * (256 - WLag) + ((WLag * ((uint32_t)lastOut)/256));
+  52:	20 91 7d 00 	lds	r18, 0x007D
+  56:	40 e0       	ldi	r20, 0x00	; 0
+  58:	51 e0       	ldi	r21, 0x01	; 1
+  5a:	ca 01       	movw	r24, r20
+  5c:	82 1b       	sub	r24, r18
+  5e:	91 09       	sbc	r25, r1
+  60:	70 e0       	ldi	r23, 0x00	; 0
+  62:	82 d1       	rcall	.+772    	; 0x368 <__mulhi3>
+  64:	ec 01       	movw	r28, r24
+  66:	60 91 66 00 	lds	r22, 0x0066
+  6a:	70 91 67 00 	lds	r23, 0x0067
+  6e:	80 e0       	ldi	r24, 0x00	; 0
+  70:	90 e0       	ldi	r25, 0x00	; 0
+  72:	30 e0       	ldi	r19, 0x00	; 0
+  74:	40 e0       	ldi	r20, 0x00	; 0
+  76:	50 e0       	ldi	r21, 0x00	; 0
+  78:	89 d1       	rcall	.+786    	; 0x38c <__mulsi3>
+  7a:	67 2f       	mov	r22, r23
+  7c:	78 2f       	mov	r23, r24
+  7e:	89 2f       	mov	r24, r25
+  80:	99 27       	eor	r25, r25
+  82:	c6 0f       	add	r28, r22
+  84:	d7 1f       	adc	r29, r23
+	lastOut = out;
+  86:	d0 93 67 00 	sts	0x0067, r29
+  8a:	c0 93 66 00 	sts	0x0066, r28
+	return out/256; 
+	//return in;
+}
+  8e:	7e 01       	movw	r14, r28
+  90:	8f 2d       	mov	r24, r15
+  92:	df 91       	pop	r29
+  94:	cf 91       	pop	r28
+  96:	ff 90       	pop	r15
+  98:	ef 90       	pop	r14
+  9a:	08 95       	ret
+
+0000009c <startT1_div8_fastPWM_B>:
+}
+#endif
+
+void startT1_div8_fastPWM_B(void)
+{
+	TCCR0B |= _BV(CS01);	// div_8 
+  9c:	83 b7       	in	r24, 0x33	; 51
+  9e:	82 60       	ori	r24, 0x02	; 2
+  a0:	83 bf       	out	0x33, r24	; 51
+	TCCR0A = _BV(WGM00)|_BV(WGM01);	// fast PWM 0 to FF
+  a2:	83 e0       	ldi	r24, 0x03	; 3
+  a4:	8f bd       	out	0x2f, r24	; 47
+	TCCR0A |= _BV(COM0B1) | _BV(COM0B0);		// inverted PWM to pin to light control
+  a6:	8f b5       	in	r24, 0x2f	; 47
+  a8:	80 63       	ori	r24, 0x30	; 48
+  aa:	8f bd       	out	0x2f, r24	; 47
+}
+  ac:	08 95       	ret
+
+000000ae <setLightBright>:
+{
+	TCCR0A &= ~(_BV(COM0B1) | _BV(COM0B0));
+}
+
+void setLightBright(uint8_t val)
+{
+  ae:	df 93       	push	r29
+  b0:	cf 93       	push	r28
+  b2:	0f 92       	push	r0
+  b4:	cd b7       	in	r28, 0x3d	; 61
+  b6:	de b7       	in	r29, 0x3e	; 62
+	if(val == 0)
+  b8:	88 23       	and	r24, r24
+  ba:	21 f4       	brne	.+8      	; 0xc4 <setLightBright+0x16>
+	TCCR0A |= _BV(COM0B1) | _BV(COM0B0);		// inverted PWM to pin to light control
+}
+
+inline void stop_fastPWM_B(void)
+{
+	TCCR0A &= ~(_BV(COM0B1) | _BV(COM0B0));
+  bc:	9f b5       	in	r25, 0x2f	; 47
+  be:	9f 7c       	andi	r25, 0xCF	; 207
+  c0:	9f bd       	out	0x2f, r25	; 47
+  c2:	03 c0       	rjmp	.+6      	; 0xca <setLightBright+0x1c>
+	{
+		stop_fastPWM_B();
+	}
+	else 
+	{
+		startT1_div8_fastPWM_B();
+  c4:	89 83       	std	Y+1, r24	; 0x01
+  c6:	ea df       	rcall	.-44     	; 0x9c <startT1_div8_fastPWM_B>
+  c8:	89 81       	ldd	r24, Y+1	; 0x01
+	}
+	OCR0B = ~val;
+  ca:	80 95       	com	r24
+  cc:	89 bd       	out	0x29, r24	; 41
+}
+  ce:	0f 90       	pop	r0
+  d0:	cf 91       	pop	r28
+  d2:	df 91       	pop	r29
+  d4:	08 95       	ret
+
+000000d6 <__vector_3>:
+
+	return ret;
+}
+
+ISR(TIM0_OVF_vect)
+{
+  d6:	1f 92       	push	r1
+  d8:	0f 92       	push	r0
+  da:	0f b6       	in	r0, 0x3f	; 63
+  dc:	0f 92       	push	r0
+  de:	11 24       	eor	r1, r1
+  e0:	2f 93       	push	r18
+  e2:	3f 93       	push	r19
+  e4:	4f 93       	push	r20
+  e6:	5f 93       	push	r21
+  e8:	6f 93       	push	r22
+  ea:	7f 93       	push	r23
+  ec:	8f 93       	push	r24
+  ee:	9f 93       	push	r25
+  f0:	af 93       	push	r26
+  f2:	bf 93       	push	r27
+  f4:	ef 93       	push	r30
+  f6:	ff 93       	push	r31
+	static uint8_t ms10_timer = MS_10;
+	uint16_t val;
+
+	ms10_timer--;
+  f8:	80 91 63 00 	lds	r24, 0x0063
+  fc:	81 50       	subi	r24, 0x01	; 1
+  fe:	80 93 63 00 	sts	0x0063, r24
+	if(ms10_timer == 0)
+ 102:	88 23       	and	r24, r24
+ 104:	41 f4       	brne	.+16     	; 0x116 <__vector_3+0x40>
+	{
+		ms10_timer = MS_10;
+ 106:	86 e0       	ldi	r24, 0x06	; 6
+ 108:	80 93 63 00 	sts	0x0063, r24
+		evt.ms10 = 1;
+ 10c:	80 91 6b 00 	lds	r24, 0x006B
+ 110:	82 60       	ori	r24, 0x02	; 2
+ 112:	80 93 6b 00 	sts	0x006B, r24
+	}
+	
+	if(adc_photosensor > 255)
+ 116:	80 91 78 00 	lds	r24, 0x0078
+ 11a:	90 91 79 00 	lds	r25, 0x0079
+ 11e:	8f 3f       	cpi	r24, 0xFF	; 255
+ 120:	91 05       	cpc	r25, r1
+ 122:	11 f0       	breq	.+4      	; 0x128 <__vector_3+0x52>
+ 124:	08 f0       	brcs	.+2      	; 0x128 <__vector_3+0x52>
+	{
+		photoLevel = 255;
+ 126:	8f ef       	ldi	r24, 0xFF	; 255
+	}
+	else
+	{
+		photoLevel = adc_photosensor;
+ 128:	80 93 6e 00 	sts	0x006E, r24
+	}
+	photoLevelLPF = filtr_1(photoLevel);
+ 12c:	80 91 6e 00 	lds	r24, 0x006E
+ 130:	8b df       	rcall	.-234    	; 0x48 <filtr_1>
+ 132:	80 93 68 00 	sts	0x0068, r24
+
+	cli();
+ 136:	f8 94       	cli
+	ADMUX&=~(0x3);
+ 138:	87 b1       	in	r24, 0x07	; 7
+ 13a:	8c 7f       	andi	r24, 0xFC	; 252
+ 13c:	87 b9       	out	0x07, r24	; 7
+    ADMUX|=ADC3;
+ 13e:	87 b1       	in	r24, 0x07	; 7
+ 140:	83 60       	ori	r24, 0x03	; 3
+ 142:	87 b9       	out	0x07, r24	; 7
+	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
+ 144:	36 9a       	sbi	0x06, 6	; 6
+	sei();
+ 146:	78 94       	sei
+	
+	evt.tic = 1;
+ 148:	80 91 6b 00 	lds	r24, 0x006B
+ 14c:	81 60       	ori	r24, 0x01	; 1
+ 14e:	80 93 6b 00 	sts	0x006B, r24
+}
+ 152:	ff 91       	pop	r31
+ 154:	ef 91       	pop	r30
+ 156:	bf 91       	pop	r27
+ 158:	af 91       	pop	r26
+ 15a:	9f 91       	pop	r25
+ 15c:	8f 91       	pop	r24
+ 15e:	7f 91       	pop	r23
+ 160:	6f 91       	pop	r22
+ 162:	5f 91       	pop	r21
+ 164:	4f 91       	pop	r20
+ 166:	3f 91       	pop	r19
+ 168:	2f 91       	pop	r18
+ 16a:	0f 90       	pop	r0
+ 16c:	0f be       	out	0x3f, r0	; 63
+ 16e:	0f 90       	pop	r0
+ 170:	1f 90       	pop	r1
+ 172:	18 95       	reti
+
+00000174 <__vector_9>:
+
+uint8_t mirophone_cycle=0;
+#define MICROPHONE_CYCLE_NUM	2
+
+ISR(ADC_vect)
+{
+ 174:	1f 92       	push	r1
+ 176:	0f 92       	push	r0
+ 178:	0f b6       	in	r0, 0x3f	; 63
+ 17a:	0f 92       	push	r0
+ 17c:	11 24       	eor	r1, r1
+ 17e:	8f 93       	push	r24
+ 180:	9f 93       	push	r25
+	switch(ADMUX&0x3)
+ 182:	87 b1       	in	r24, 0x07	; 7
+ 184:	90 e0       	ldi	r25, 0x00	; 0
+ 186:	83 70       	andi	r24, 0x03	; 3
+ 188:	90 70       	andi	r25, 0x00	; 0
+ 18a:	81 30       	cpi	r24, 0x01	; 1
+ 18c:	91 05       	cpc	r25, r1
+ 18e:	89 f0       	breq	.+34     	; 0x1b2 <__vector_9+0x3e>
+ 190:	83 30       	cpi	r24, 0x03	; 3
+ 192:	91 05       	cpc	r25, r1
+ 194:	01 f5       	brne	.+64     	; 0x1d6 <__vector_9+0x62>
+	{
+		case ADC3:
+		{
+			adc_photosensor=ADC;
+ 196:	84 b1       	in	r24, 0x04	; 4
+ 198:	95 b1       	in	r25, 0x05	; 5
+ 19a:	90 93 79 00 	sts	0x0079, r25
+ 19e:	80 93 78 00 	sts	0x0078, r24
+
+			mirophone_cycle=0;
+ 1a2:	10 92 65 00 	sts	0x0065, r1
+			ADMUX&=~(0x3);
+ 1a6:	87 b1       	in	r24, 0x07	; 7
+ 1a8:	8c 7f       	andi	r24, 0xFC	; 252
+ 1aa:	87 b9       	out	0x07, r24	; 7
+			ADMUX|=ADC1;
+ 1ac:	38 9a       	sbi	0x07, 0	; 7
+			ADCSRA |= _BV(ADSC);
+ 1ae:	36 9a       	sbi	0x06, 6	; 6
+		}
+		break;
+ 1b0:	12 c0       	rjmp	.+36     	; 0x1d6 <__vector_9+0x62>
+
+		case ADC1:
+		{
+			
+			adc_microphone=ADC;
+ 1b2:	84 b1       	in	r24, 0x04	; 4
+ 1b4:	95 b1       	in	r25, 0x05	; 5
+ 1b6:	90 93 7b 00 	sts	0x007B, r25
+ 1ba:	80 93 7a 00 	sts	0x007A, r24
+
+			if(mirophone_cycle<MICROPHONE_CYCLE_NUM)
+ 1be:	90 91 65 00 	lds	r25, 0x0065
+ 1c2:	92 30       	cpi	r25, 0x02	; 2
+ 1c4:	40 f4       	brcc	.+16     	; 0x1d6 <__vector_9+0x62>
+			{
+				ADMUX&=~(0x3);
+ 1c6:	87 b1       	in	r24, 0x07	; 7
+ 1c8:	8c 7f       	andi	r24, 0xFC	; 252
+ 1ca:	87 b9       	out	0x07, r24	; 7
+				ADMUX|=ADC1;
+ 1cc:	38 9a       	sbi	0x07, 0	; 7
+				ADCSRA |= _BV(ADSC);
+ 1ce:	36 9a       	sbi	0x06, 6	; 6
+				mirophone_cycle++;
+ 1d0:	9f 5f       	subi	r25, 0xFF	; 255
+ 1d2:	90 93 65 00 	sts	0x0065, r25
+
+		default:
+		{
+		}
+	}
+}
+ 1d6:	9f 91       	pop	r25
+ 1d8:	8f 91       	pop	r24
+ 1da:	0f 90       	pop	r0
+ 1dc:	0f be       	out	0x3f, r0	; 63
+ 1de:	0f 90       	pop	r0
+ 1e0:	1f 90       	pop	r1
+ 1e2:	18 95       	reti
+
+000001e4 <stateMashine>:
+void stateMashine(void)
+{
+	static uint16_t timer = 200;	// POWER_ON mode timer
+	
+
+	PORTB &= ~_BV(0);
+ 1e4:	c0 98       	cbi	0x18, 0	; 24
+
+	if(photoLevelLPF > (triggerPhotoLevel + HYST))
+ 1e6:	20 91 68 00 	lds	r18, 0x0068
+ 1ea:	30 e0       	ldi	r19, 0x00	; 0
+ 1ec:	40 91 7c 00 	lds	r20, 0x007C
+ 1f0:	80 91 76 00 	lds	r24, 0x0076
+ 1f4:	90 e0       	ldi	r25, 0x00	; 0
+ 1f6:	84 0f       	add	r24, r20
+ 1f8:	91 1d       	adc	r25, r1
+ 1fa:	82 17       	cp	r24, r18
+ 1fc:	93 07       	cpc	r25, r19
+ 1fe:	2c f4       	brge	.+10     	; 0x20a <stateMashine+0x26>
+	{	// при освешенности большей порога однозначно выключаем свет из любого режима
+    	PORTB |= _BV(0);
+ 200:	c0 9a       	sbi	0x18, 0	; 24
+		setLightBright(BRIGHT_0);    // turn the LED off
+ 202:	80 e0       	ldi	r24, 0x00	; 0
+ 204:	54 df       	rcall	.-344    	; 0xae <setLightBright>
+		mode = MODE_OFF;
+ 206:	10 92 60 00 	sts	0x0060, r1
+	}
+	switch (mode)
+ 20a:	80 91 60 00 	lds	r24, 0x0060
+ 20e:	81 30       	cpi	r24, 0x01	; 1
+ 210:	11 f1       	breq	.+68     	; 0x256 <stateMashine+0x72>
+ 212:	81 30       	cpi	r24, 0x01	; 1
+ 214:	30 f0       	brcs	.+12     	; 0x222 <stateMashine+0x3e>
+ 216:	82 30       	cpi	r24, 0x02	; 2
+ 218:	49 f1       	breq	.+82     	; 0x26c <stateMashine+0x88>
+ 21a:	83 30       	cpi	r24, 0x03	; 3
+ 21c:	09 f0       	breq	.+2      	; 0x220 <stateMashine+0x3c>
+ 21e:	4f c0       	rjmp	.+158    	; 0x2be <stateMashine+0xda>
+ 220:	37 c0       	rjmp	.+110    	; 0x290 <stateMashine+0xac>
+	{
+		case MODE_OFF:	// свет выключен т.к. внешняя освещенность больше порога. При снижении освещенности переходим в нормальный режим 
+			if(photoLevelLPF  <= (triggerPhotoLevel - HYST))
+ 222:	20 91 68 00 	lds	r18, 0x0068
+ 226:	30 e0       	ldi	r19, 0x00	; 0
+ 228:	80 91 76 00 	lds	r24, 0x0076
+ 22c:	90 e0       	ldi	r25, 0x00	; 0
+ 22e:	40 91 7c 00 	lds	r20, 0x007C
+ 232:	84 1b       	sub	r24, r20
+ 234:	91 09       	sbc	r25, r1
+ 236:	82 17       	cp	r24, r18
+ 238:	93 07       	cpc	r25, r19
+ 23a:	0c f4       	brge	.+2      	; 0x23e <stateMashine+0x5a>
+ 23c:	40 c0       	rjmp	.+128    	; 0x2be <stateMashine+0xda>
+			{
+		    	setLightBright(BRIGHT_LOW);    // turn the LED off by making the voltage LOW
+ 23e:	80 91 75 00 	lds	r24, 0x0075
+ 242:	35 df       	rcall	.-406    	; 0xae <setLightBright>
+				mode = MODE_NORMAL;
+ 244:	82 e0       	ldi	r24, 0x02	; 2
+ 246:	80 93 60 00 	sts	0x0060, r24
+				evt.sound = 0;
+ 24a:	80 91 6b 00 	lds	r24, 0x006B
+ 24e:	87 7f       	andi	r24, 0xF7	; 247
+ 250:	80 93 6b 00 	sts	0x006B, r24
+ 254:	08 95       	ret
+		  	}
+		break;
+
+		case POWER_ON:
+	    	if(timer)
+ 256:	80 91 61 00 	lds	r24, 0x0061
+ 25a:	90 91 62 00 	lds	r25, 0x0062
+ 25e:	00 97       	sbiw	r24, 0x00	; 0
+ 260:	e9 f4       	brne	.+58     	; 0x29c <stateMashine+0xb8>
+			{
+				timer--;
+			}
+			else
+			{
+		    	setLightBright(BRIGHT_0);    // turn the LED off by making the voltage LOW
+ 262:	80 e0       	ldi	r24, 0x00	; 0
+ 264:	24 df       	rcall	.-440    	; 0xae <setLightBright>
+				mode = MODE_OFF;
+ 266:	10 92 60 00 	sts	0x0060, r1
+ 26a:	08 95       	ret
+		break;
+
+		case MODE_NORMAL: // освещенность в этом режиме - 20%. при срабатывании датчика звука - ставим яркость 100 и уходим в отработку таймера 
+			//setLightBright(photoLevelLPF);
+//			setLightBright(BRIGHT_100);
+			if(evt.sound)
+ 26c:	80 91 6b 00 	lds	r24, 0x006B
+ 270:	83 ff       	sbrs	r24, 3
+ 272:	25 c0       	rjmp	.+74     	; 0x2be <stateMashine+0xda>
+			{
+	    		timer = timer_ON_MODE;
+ 274:	80 91 6c 00 	lds	r24, 0x006C
+ 278:	90 91 6d 00 	lds	r25, 0x006D
+ 27c:	90 93 62 00 	sts	0x0062, r25
+ 280:	80 93 61 00 	sts	0x0061, r24
+	    		setLightBright(BRIGHT_100);    // turn the LED off by making the voltage LOW
+ 284:	86 ee       	ldi	r24, 0xE6	; 230
+ 286:	13 df       	rcall	.-474    	; 0xae <setLightBright>
+				mode = MODE_TIMER;
+ 288:	83 e0       	ldi	r24, 0x03	; 3
+ 28a:	80 93 60 00 	sts	0x0060, r24
+ 28e:	08 95       	ret
+			
+			}
+		break;
+
+		case MODE_TIMER:
+	    	if(timer)
+ 290:	80 91 61 00 	lds	r24, 0x0061
+ 294:	90 91 62 00 	lds	r25, 0x0062
+ 298:	00 97       	sbiw	r24, 0x00	; 0
+ 29a:	31 f0       	breq	.+12     	; 0x2a8 <stateMashine+0xc4>
+			{
+				timer--;
+ 29c:	01 97       	sbiw	r24, 0x01	; 1
+ 29e:	90 93 62 00 	sts	0x0062, r25
+ 2a2:	80 93 61 00 	sts	0x0061, r24
+ 2a6:	08 95       	ret
+			}
+			else
+			{
+		    	setLightBright(BRIGHT_LOW);    // turn the LED to 20%
+ 2a8:	80 91 75 00 	lds	r24, 0x0075
+ 2ac:	00 df       	rcall	.-512    	; 0xae <setLightBright>
+				mode = MODE_NORMAL;
+ 2ae:	82 e0       	ldi	r24, 0x02	; 2
+ 2b0:	80 93 60 00 	sts	0x0060, r24
+				evt.sound = 0;
+ 2b4:	80 91 6b 00 	lds	r24, 0x006B
+ 2b8:	87 7f       	andi	r24, 0xF7	; 247
+ 2ba:	80 93 6b 00 	sts	0x006B, r24
+ 2be:	08 95       	ret
+
+000002c0 <main>:
+	ADCSRA |= _BV(ADEN) | _BV(ADIE) | _BV(ADPS1) | _BV(ADPS0);	// около 40 мкс на преобразование (8 бит) при 1 200 000
+	DIDR0|=_BV(ADC1D)|_BV(ADC3D);
+}
+
+int main()
+{
+ 2c0:	1f 93       	push	r17
+	}
+}
+
+inline void init_var(void)
+{
+	triggerPhotoLevel = eeprom_read_byte(&triggerPhotoLevel_EEMEM); // 
+ 2c2:	80 e0       	ldi	r24, 0x00	; 0
+ 2c4:	90 e0       	ldi	r25, 0x00	; 0
+ 2c6:	7b d0       	rcall	.+246    	; 0x3be <__eerd_byte_tn13a>
+ 2c8:	18 2f       	mov	r17, r24
+ 2ca:	80 93 76 00 	sts	0x0076, r24
+	triggerSoundLevel = eeprom_read_byte(&triggerSoundLevel_EEMEM); // 
+ 2ce:	81 e0       	ldi	r24, 0x01	; 1
+ 2d0:	90 e0       	ldi	r25, 0x00	; 0
+ 2d2:	75 d0       	rcall	.+234    	; 0x3be <__eerd_byte_tn13a>
+ 2d4:	80 93 77 00 	sts	0x0077, r24
+	WLag = eeprom_read_byte(&WLag_EEMEM); // постоянная времени фильтра
+ 2d8:	82 e0       	ldi	r24, 0x02	; 2
+ 2da:	90 e0       	ldi	r25, 0x00	; 0
+ 2dc:	70 d0       	rcall	.+224    	; 0x3be <__eerd_byte_tn13a>
+ 2de:	80 93 7d 00 	sts	0x007D, r24
+	BRIGHT_LOW = eeprom_read_byte(&BRIGHT_LOW_EEMEM); // уровень пониженной яркости (из максимума = 250)
+ 2e2:	83 e0       	ldi	r24, 0x03	; 3
+ 2e4:	90 e0       	ldi	r25, 0x00	; 0
+ 2e6:	6b d0       	rcall	.+214    	; 0x3be <__eerd_byte_tn13a>
+ 2e8:	80 93 75 00 	sts	0x0075, r24
+	timer_ON_MODE = eeprom_read_word(&timer_ON_MODE_EEMEM); // время удержания при срабатывании звука
+ 2ec:	84 e0       	ldi	r24, 0x04	; 4
+ 2ee:	90 e0       	ldi	r25, 0x00	; 0
+ 2f0:	6e d0       	rcall	.+220    	; 0x3ce <__eerd_word_tn13a>
+ 2f2:	90 93 6d 00 	sts	0x006D, r25
+ 2f6:	80 93 6c 00 	sts	0x006C, r24
+	HYST = triggerPhotoLevel / 16;	// гистерезис день/ночь
+ 2fa:	12 95       	swap	r17
+ 2fc:	1f 70       	andi	r17, 0x0F	; 15
+ 2fe:	10 93 7c 00 	sts	0x007C, r17
+	mode = POWER_ON;
+ 302:	81 e0       	ldi	r24, 0x01	; 1
+ 304:	80 93 60 00 	sts	0x0060, r24
+}
+
+int main()
+{
+	init_var();
+	DDRB |=0b00000011;//Led=portB.1
+ 308:	87 b3       	in	r24, 0x17	; 23
+ 30a:	83 60       	ori	r24, 0x03	; 3
+ 30c:	87 bb       	out	0x17, r24	; 23
+	startT1_div8_fastPWM_B();		// PWM to pin to light control
+}
+
+inline void ADC_init(void)
+{
+	ADMUX&=~(0x3);
+ 30e:	87 b1       	in	r24, 0x07	; 7
+ 310:	8c 7f       	andi	r24, 0xFC	; 252
+ 312:	87 b9       	out	0x07, r24	; 7
+	ADCSRA |= _BV(ADEN) | _BV(ADIE) | _BV(ADPS1) | _BV(ADPS0);	// около 40 мкс на преобразование (8 бит) при 1 200 000
+ 314:	86 b1       	in	r24, 0x06	; 6
+ 316:	8b 68       	ori	r24, 0x8B	; 139
+ 318:	86 b9       	out	0x06, r24	; 6
+	DIDR0|=_BV(ADC1D)|_BV(ADC3D);
+ 31a:	84 b3       	in	r24, 0x14	; 20
+ 31c:	8c 60       	ori	r24, 0x0C	; 12
+ 31e:	84 bb       	out	0x14, r24	; 20
+}
+
+inline void timer_init(void)
+{
+	//Setup timer interrupt and PWM pins
+	TIMSK0 |= 2;						// and OVF interrupt
+ 320:	89 b7       	in	r24, 0x39	; 57
+ 322:	82 60       	ori	r24, 0x02	; 2
+ 324:	89 bf       	out	0x39, r24	; 57
+	TCNT0=0; 
+ 326:	12 be       	out	0x32, r1	; 50
+	setLightBright(BRIGHT_100);	// on
+ 328:	86 ee       	ldi	r24, 0xE6	; 230
+ 32a:	c1 de       	rcall	.-638    	; 0xae <setLightBright>
+	startT1_div8_fastPWM_B();		// PWM to pin to light control
+ 32c:	b7 de       	rcall	.-658    	; 0x9c <startT1_div8_fastPWM_B>
+{
+	init_var();
+	DDRB |=0b00000011;//Led=portB.1
+	ADC_init();
+	timer_init();
+	sei();
+ 32e:	78 94       	sei
+	while(1)
+	{
+		if(evt.ms10)
+ 330:	80 91 6b 00 	lds	r24, 0x006B
+ 334:	81 ff       	sbrs	r24, 1
+ 336:	06 c0       	rjmp	.+12     	; 0x344 <main+0x84>
+		{
+			stateMashine();
+ 338:	55 df       	rcall	.-342    	; 0x1e4 <stateMashine>
+			evt.ms10 = 0;
+ 33a:	80 91 6b 00 	lds	r24, 0x006B
+ 33e:	8d 7f       	andi	r24, 0xFD	; 253
+ 340:	80 93 6b 00 	sts	0x006B, r24
+#define SOUND_FRONT_VAL	110
+
+inline uint8_t findSoundFront(void)
+{
+	uint8_t  ret=0;
+	uint8_t  sound_val=(uint8_t)(adc_microphone>>2);
+ 344:	80 91 7a 00 	lds	r24, 0x007A
+ 348:	90 91 7b 00 	lds	r25, 0x007B
+ 34c:	96 95       	lsr	r25
+ 34e:	87 95       	ror	r24
+ 350:	96 95       	lsr	r25
+ 352:	87 95       	ror	r24
+
+	if(sound_val>/*SOUND_FRONT_VAL*/triggerSoundLevel)
+ 354:	20 91 77 00 	lds	r18, 0x0077
+ 358:	28 17       	cp	r18, r24
+ 35a:	50 f7       	brcc	.-44     	; 0x330 <main+0x70>
+		{
+			stateMashine();
+			evt.ms10 = 0;
+		}
+
+		if(findSoundFront()) evt.sound = 1;
+ 35c:	80 91 6b 00 	lds	r24, 0x006B
+ 360:	88 60       	ori	r24, 0x08	; 8
+ 362:	80 93 6b 00 	sts	0x006B, r24
+ 366:	e4 cf       	rjmp	.-56     	; 0x330 <main+0x70>
+
+00000368 <__mulhi3>:
+ 368:	55 27       	eor	r21, r21
+ 36a:	00 24       	eor	r0, r0
+
+0000036c <__mulhi3_loop>:
+ 36c:	80 ff       	sbrs	r24, 0
+ 36e:	02 c0       	rjmp	.+4      	; 0x374 <__mulhi3_skip1>
+ 370:	06 0e       	add	r0, r22
+ 372:	57 1f       	adc	r21, r23
+
+00000374 <__mulhi3_skip1>:
+ 374:	66 0f       	add	r22, r22
+ 376:	77 1f       	adc	r23, r23
+ 378:	61 15       	cp	r22, r1
+ 37a:	71 05       	cpc	r23, r1
+ 37c:	21 f0       	breq	.+8      	; 0x386 <__mulhi3_exit>
+ 37e:	96 95       	lsr	r25
+ 380:	87 95       	ror	r24
+ 382:	00 97       	sbiw	r24, 0x00	; 0
+ 384:	99 f7       	brne	.-26     	; 0x36c <__mulhi3_loop>
+
+00000386 <__mulhi3_exit>:
+ 386:	95 2f       	mov	r25, r21
+ 388:	80 2d       	mov	r24, r0
+ 38a:	08 95       	ret
+
+0000038c <__mulsi3>:
+ 38c:	ff 27       	eor	r31, r31
+ 38e:	ee 27       	eor	r30, r30
+ 390:	bb 27       	eor	r27, r27
+ 392:	aa 27       	eor	r26, r26
+
+00000394 <__mulsi3_loop>:
+ 394:	60 ff       	sbrs	r22, 0
+ 396:	04 c0       	rjmp	.+8      	; 0x3a0 <__mulsi3_skip1>
+ 398:	a2 0f       	add	r26, r18
+ 39a:	b3 1f       	adc	r27, r19
+ 39c:	e4 1f       	adc	r30, r20
+ 39e:	f5 1f       	adc	r31, r21
+
+000003a0 <__mulsi3_skip1>:
+ 3a0:	22 0f       	add	r18, r18
+ 3a2:	33 1f       	adc	r19, r19
+ 3a4:	44 1f       	adc	r20, r20
+ 3a6:	55 1f       	adc	r21, r21
+ 3a8:	96 95       	lsr	r25
+ 3aa:	87 95       	ror	r24
+ 3ac:	77 95       	ror	r23
+ 3ae:	67 95       	ror	r22
+ 3b0:	89 f7       	brne	.-30     	; 0x394 <__mulsi3_loop>
+ 3b2:	00 97       	sbiw	r24, 0x00	; 0
+ 3b4:	76 07       	cpc	r23, r22
+ 3b6:	71 f7       	brne	.-36     	; 0x394 <__mulsi3_loop>
+
+000003b8 <__mulsi3_exit>:
+ 3b8:	cf 01       	movw	r24, r30
+ 3ba:	bd 01       	movw	r22, r26
+ 3bc:	08 95       	ret
+
+000003be <__eerd_byte_tn13a>:
+ 3be:	e1 99       	sbic	0x1c, 1	; 28
+ 3c0:	fe cf       	rjmp	.-4      	; 0x3be <__eerd_byte_tn13a>
+ 3c2:	1f ba       	out	0x1f, r1	; 31
+ 3c4:	8e bb       	out	0x1e, r24	; 30
+ 3c6:	e0 9a       	sbi	0x1c, 0	; 28
+ 3c8:	99 27       	eor	r25, r25
+ 3ca:	8d b3       	in	r24, 0x1d	; 29
+ 3cc:	08 95       	ret
+
+000003ce <__eerd_word_tn13a>:
+ 3ce:	a8 e1       	ldi	r26, 0x18	; 24
+ 3d0:	42 e0       	ldi	r20, 0x02	; 2
+ 3d2:	02 c0       	rjmp	.+4      	; 0x3d8 <__eerd_blraw_tn13a>
+
+000003d4 <__eerd_block_tn13a>:
+ 3d4:	a8 2f       	mov	r26, r24
+ 3d6:	86 2f       	mov	r24, r22
+
+000003d8 <__eerd_blraw_tn13a>:
+ 3d8:	e8 2f       	mov	r30, r24
+ 3da:	e1 99       	sbic	0x1c, 1	; 28
+ 3dc:	fe cf       	rjmp	.-4      	; 0x3da <__eerd_blraw_tn13a+0x2>
+ 3de:	1f ba       	out	0x1f, r1	; 31
+ 3e0:	05 c0       	rjmp	.+10     	; 0x3ec <__eerd_blraw_tn13a+0x14>
+ 3e2:	ee bb       	out	0x1e, r30	; 30
+ 3e4:	e0 9a       	sbi	0x1c, 0	; 28
+ 3e6:	e3 95       	inc	r30
+ 3e8:	0d b2       	in	r0, 0x1d	; 29
+ 3ea:	0d 92       	st	X+, r0
+ 3ec:	41 50       	subi	r20, 0x01	; 1
+ 3ee:	c8 f7       	brcc	.-14     	; 0x3e2 <__eerd_blraw_tn13a+0xa>
+ 3f0:	08 95       	ret
+
+000003f2 <_exit>:
+ 3f2:	f8 94       	cli
+
+000003f4 <__stop_program>:
+ 3f4:	ff cf       	rjmp	.-2      	; 0x3f4 <__stop_program>
