@@ -144,7 +144,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3f6
+.text           0x00000000      0x3f8
  *(.vectors)
  .vectors       0x00000000       0x14 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25/crttn13a.o
                 0x00000000                __vector_default
@@ -208,7 +208,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000046                __vector_2
                 0x00000046                __vector_8
                 0x00000046                __vector_1
- .text          0x00000048      0x320 main.o
+ .text          0x00000048      0x322 main.o
                 0x00000048                filtr_1
                 0x0000009c                startT1_div8_fastPWM_B
                 0x000000ae                setLightBright
@@ -216,38 +216,38 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000176                __vector_9
                 0x000001e8                stateMashine
                 0x000002c0                main
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
- .text          0x00000368        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
-                0x00000368                . = ALIGN (0x2)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
+ .text          0x0000036a        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
+                0x0000036a                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00000368       0x24 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
-                0x00000368                __mulhi3
- .text.libgcc   0x0000038c       0x32 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
-                0x0000038c                __mulsi3
- .text.libgcc   0x000003be        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
- .text.libgcc   0x000003be        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
- .text.libgcc   0x000003be        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x0000036a       0x24 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
+                0x0000036a                __mulhi3
+ .text.libgcc   0x0000038e       0x32 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
+                0x0000038e                __mulsi3
+ .text.libgcc   0x000003c0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .text.libgcc   0x000003c0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
+ .text.libgcc   0x000003c0        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
  .text.avr-libc
-                0x000003be       0x10 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
-                0x000003be                __eerd_byte_tn13a
+                0x000003c0       0x10 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
+                0x000003c0                __eerd_byte_tn13a
  .text.avr-libc
-                0x000003ce        0x6 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
-                0x000003ce                __eerd_word_tn13a
+                0x000003d0        0x6 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
+                0x000003d0                __eerd_word_tn13a
  .text.avr-libc
-                0x000003d4       0x1e c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
-                0x000003d4                __eerd_block_tn13a
-                0x000003d8                __eerd_blraw_tn13a
-                0x000003f2                . = ALIGN (0x2)
+                0x000003d6       0x1e c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
+                0x000003d6                __eerd_block_tn13a
+                0x000003da                __eerd_blraw_tn13a
+                0x000003f4                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003f2        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
-                0x000003f2                _exit
-                0x000003f2                exit
+ .fini9         0x000003f4        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+                0x000003f4                _exit
+                0x000003f4                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -266,11 +266,11 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003f2        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .fini0         0x000003f4        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003f6                _etext = .
+                0x000003f8                _etext = .
 
-.data           0x00800060        0x4 load address 0x000003f6
+.data           0x00800060        0x4 load address 0x000003f8
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800060        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25/crttn13a.o
@@ -324,8 +324,8 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x0080007c                HYST
                 0x0080007d                WLag
                 0x0080007e                PROVIDE (__bss_end, .)
-                0x000003f6                __data_load_start = LOADADDR (.data)
-                0x000003fa                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000003f8                __data_load_start = LOADADDR (.data)
+                0x000003fc                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080007e        0x0
                 0x0080007e                PROVIDE (__noinit_start, .)

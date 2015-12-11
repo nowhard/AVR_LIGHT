@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 
 
-uint8_t EEMEM triggerPhotoLevel_EEMEM = 80; //
+uint8_t EEMEM triggerPhotoLevel_EEMEM = 50; //
 uint8_t EEMEM triggerSoundLevel_EEMEM = 110;
 uint8_t EEMEM WLag_EEMEM = 254; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
@@ -283,7 +283,7 @@ inline void init_var(void)
 	WLag = eeprom_read_byte(&WLag_EEMEM); // постоянная времени фильтра
 	BRIGHT_LOW = eeprom_read_byte(&BRIGHT_LOW_EEMEM); // уровень пониженной яркости (из максимума = 250)
 	timer_ON_MODE = eeprom_read_word(&timer_ON_MODE_EEMEM); // время удержания при срабатывании звука
-	HYST = triggerPhotoLevel / 16;	// гистерезис день/ночь
+	HYST = triggerPhotoLevel >>3;	// гистерезис день/ночь
 	mode = POWER_ON;
 }
 
