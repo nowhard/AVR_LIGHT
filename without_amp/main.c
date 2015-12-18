@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 
 
-uint8_t EEMEM triggerPhotoLevel_EEMEM = 130; //
+uint8_t EEMEM triggerPhotoLevel_EEMEM = 80; //
 uint8_t EEMEM triggerSoundLevel_EEMEM = 110;
 uint8_t EEMEM WLag_EEMEM = 254; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
@@ -82,7 +82,6 @@ uint8_t filtr_1 (uint8_t in)
 	uint16_t out = in * (256 - WLag) + ((WLag * (uint32_t)lastOut) / 256);
 	lastOut = out;
 	return out / 256; 
-
 }
 #else
 uint8_t filtr_1 (uint8_t in)
@@ -143,7 +142,11 @@ ISR(TIM0_OVF_vect)
 	static uint8_t ms10_timer = MS_10;
 	uint16_t val;
 
-
+/*	cli();
+	ADMUX&=~(0x3);
+    ADMUX|=ADC3;
+	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
+	sei();*/
 
 //	PORTB |= _BV(0);
 
@@ -153,21 +156,23 @@ ISR(TIM0_OVF_vect)
 		ms10_timer = MS_10;
 		evt.ms10 = 1;
 	}
-
-    ADMUX&=~(0x3);
-    ADMUX|=ADC3;
-	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
 	
-	if(adc_photosensor > 255)
+
+	val= (1023-adc_photosensor);	
+
+	if(val > 255)
 	{
 		photoLevel = 255;
 	}
 	else
 	{
-		photoLevel = adc_photosensor;
+		photoLevel = val;
 	}
 	photoLevelLPF = filtr_1(photoLevel);
 
+	ADMUX&=~(0x3);
+    ADMUX|=ADC3;
+	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
 
 	
 	evt.tic = 1;
@@ -183,13 +188,13 @@ ISR(ADC_vect)
 	{
 		case ADC3:
 		{
-			//PORTB &= ~_BV(0);
+		//	PORTB &= ~_BV(0);
 			adc_photosensor=ADC;
 
 			mirophone_cycle=0;
-			ADMUX&=~(0x3);
+/*			ADMUX&=~(0x3);
 			ADMUX|=ADC1;
-			ADCSRA |= _BV(ADSC);
+			ADCSRA |= _BV(ADSC);*/
 		}
 		break;
 

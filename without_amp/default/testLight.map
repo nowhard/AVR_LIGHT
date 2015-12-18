@@ -144,7 +144,7 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3ee
+.text           0x00000000      0x3ec
  *(.vectors)
  .vectors       0x00000000       0x14 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25/crttn13a.o
                 0x00000000                __vector_default
@@ -208,46 +208,46 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x00000046                __vector_2
                 0x00000046                __vector_8
                 0x00000046                __vector_1
- .text          0x00000048      0x318 main.o
+ .text          0x00000048      0x316 main.o
                 0x00000048                filtr_1
                 0x0000009c                startT1_div8_fastPWM_B
                 0x000000ae                setLightBright
                 0x000000d6                __vector_3
-                0x00000170                __vector_9
-                0x000001e0                stateMashine
-                0x000002b8                main
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
- .text          0x00000360        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
-                0x00000360                . = ALIGN (0x2)
+                0x00000178                __vector_9
+                0x000001de                stateMashine
+                0x000002b6                main
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
+ .text          0x0000035e        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
+                0x0000035e                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00000360       0x24 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
-                0x00000360                __mulhi3
- .text.libgcc   0x00000384       0x32 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
-                0x00000384                __mulsi3
- .text.libgcc   0x000003b6        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
- .text.libgcc   0x000003b6        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
- .text.libgcc   0x000003b6        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
+ .text.libgcc   0x0000035e       0x24 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulhi3.o)
+                0x0000035e                __mulhi3
+ .text.libgcc   0x00000382       0x32 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_mulsi3.o)
+                0x00000382                __mulsi3
+ .text.libgcc   0x000003b4        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .text.libgcc   0x000003b4        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_copy_data.o)
+ .text.libgcc   0x000003b4        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_clear_bss.o)
  .text.avr-libc
-                0x000003b6       0x10 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
-                0x000003b6                __eerd_byte_tn13a
+                0x000003b4       0x10 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_byte_attiny13a.o)
+                0x000003b4                __eerd_byte_tn13a
  .text.avr-libc
-                0x000003c6        0x6 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
-                0x000003c6                __eerd_word_tn13a
+                0x000003c4        0x6 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_word_attiny13a.o)
+                0x000003c4                __eerd_word_tn13a
  .text.avr-libc
-                0x000003cc       0x1e c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
-                0x000003cc                __eerd_block_tn13a
-                0x000003d0                __eerd_blraw_tn13a
-                0x000003ea                . = ALIGN (0x2)
+                0x000003ca       0x1e c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25\libc.a(eerd_block_attiny13a.o)
+                0x000003ca                __eerd_block_tn13a
+                0x000003ce                __eerd_blraw_tn13a
+                0x000003e8                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003ea        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
-                0x000003ea                _exit
-                0x000003ea                exit
+ .fini9         0x000003e8        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+                0x000003e8                _exit
+                0x000003e8                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -266,11 +266,11 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003ea        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
+ .fini0         0x000003e8        0x4 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr25\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003ee                _etext = .
+                0x000003ec                _etext = .
 
-.data           0x00800060        0x4 load address 0x000003ee
+.data           0x00800060        0x4 load address 0x000003ec
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800060        0x0 c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/../../../../avr/lib/avr25/crttn13a.o
@@ -324,8 +324,8 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
                 0x0080007c                HYST
                 0x0080007d                WLag
                 0x0080007e                PROVIDE (__bss_end, .)
-                0x000003ee                __data_load_start = LOADADDR (.data)
-                0x000003f2                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000003ec                __data_load_start = LOADADDR (.data)
+                0x000003f0                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x0080007e        0x0
                 0x0080007e                PROVIDE (__noinit_start, .)
@@ -408,31 +408,31 @@ LOAD c:/program files/atmel/avr tools/avr toolchain/bin/../lib/gcc/avr/4.5.1/avr
  .debug_pubnames
                 0x00000000      0x1f2 main.o
 
-.debug_info     0x00000000      0x60d
+.debug_info     0x00000000      0x611
  *(.debug_info)
- .debug_info    0x00000000      0x60d main.o
+ .debug_info    0x00000000      0x611 main.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev   0x00000000      0x20d
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0x20d main.o
 
-.debug_line     0x00000000      0x37c
+.debug_line     0x00000000      0x36c
  *(.debug_line)
- .debug_line    0x00000000      0x37c main.o
+ .debug_line    0x00000000      0x36c main.o
 
 .debug_frame    0x00000000       0x80
  *(.debug_frame)
  .debug_frame   0x00000000       0x80 main.o
 
-.debug_str      0x00000000      0x31e
+.debug_str      0x00000000      0x32a
  *(.debug_str)
- .debug_str     0x00000000      0x31e main.o
-                                0x35d (size before relaxing)
+ .debug_str     0x00000000      0x32a main.o
+                                0x369 (size before relaxing)
 
-.debug_loc      0x00000000       0x88
+.debug_loc      0x00000000       0xa0
  *(.debug_loc)
- .debug_loc     0x00000000       0x88 main.o
+ .debug_loc     0x00000000       0xa0 main.o
 
 .debug_macinfo
  *(.debug_macinfo)
