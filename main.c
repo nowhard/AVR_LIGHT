@@ -18,7 +18,7 @@
 #include <avr/interrupt.h>
 
 
-uint8_t EEMEM triggerPhotoLevel_EEMEM = 130; //
+uint8_t EEMEM triggerPhotoLevel_EEMEM = 70; //
 uint8_t EEMEM triggerSoundLevel_EEMEM = 110;
 uint8_t EEMEM WLag_EEMEM = 254; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
