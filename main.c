@@ -19,7 +19,7 @@
 
 
 uint8_t EEMEM triggerPhotoLevel_EEMEM = 70; //
-uint8_t EEMEM triggerSoundLevel_EEMEM = 110;
+uint8_t EEMEM triggerSoundLevel_EEMEM = 125;
 uint8_t EEMEM WLag_EEMEM = 254; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
 uint16_t EEMEM timer_ON_MODE_EEMEM = 6000; //
@@ -75,13 +75,21 @@ enum
 
 
 // фильтр первого порядка с коэффициентом усиления = 256 (иначе на малых сигналах возможна самоблокировка фильтра по ограниченной разрядности)
+
+#define WLAG 4095
+#define FILTER_TCONST	4096
 #if 1
 uint8_t filtr_1 (uint8_t in)
 {
-	static uint16_t lastOut=0;
+/*	static uint16_t lastOut=0;
 	uint16_t out = in * (256 - WLag) + ((WLag * (uint32_t)lastOut) / 256);
 	lastOut = out;
-	return out / 256; 
+	return out / 256; */
+
+	static uint32_t lastOut=0;
+	uint32_t out = in * (FILTER_TCONST - WLAG) + ((WLAG * lastOut) / FILTER_TCONST);
+	lastOut = out;
+	return (uint8_t)(out / FILTER_TCONST); 
 
 }
 #else
@@ -145,7 +153,7 @@ ISR(TIM0_OVF_vect)
 
 
 
-//	PORTB |= _BV(0);
+
 
 	ms10_timer--;
 	if(ms10_timer == 0)
@@ -157,6 +165,9 @@ ISR(TIM0_OVF_vect)
     ADMUX&=~(0x3);
     ADMUX|=ADC3;
 	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
+
+	PORTB |= _BV(0);
+
 	
 	if(adc_photosensor > 255)
 	{
@@ -183,7 +194,7 @@ ISR(ADC_vect)
 	{
 		case ADC3:
 		{
-			//PORTB &= ~_BV(0);
+			PORTB &= ~_BV(0);
 			adc_photosensor=ADC;
 
 			mirophone_cycle=0;
@@ -290,7 +301,8 @@ inline void init_var(void)
 inline void timer_init(void)
 {
 	//Setup timer interrupt and PWM pins
-	TIMSK0 |= 2;						// and OVF interrupt
+	/*TIMSK0 |= 2;*/						// and OVF interrupt
+	TIMSK |= 2;
 	TCNT0=0; 
 	setLightBright(BRIGHT_100);	// on
 	startT1_div8_fastPWM_B();		// PWM to pin to light control

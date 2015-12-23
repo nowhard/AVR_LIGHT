@@ -4,7 +4,7 @@
 
 ## General Flags
 PROJECT = testLight
-MCU = attiny13a
+MCU = attiny45
 TARGET = testLight.elf
 CC = avr-gcc
 
