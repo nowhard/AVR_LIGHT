@@ -20,14 +20,14 @@
 
 uint8_t EEMEM triggerPhotoLevel_EEMEM = 70; //
 uint8_t EEMEM triggerSoundLevel_EEMEM = 125;
-uint8_t EEMEM WLag_EEMEM = 254; //
+uint16_t EEMEM WLag_EEMEM = 4095; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
 uint16_t EEMEM timer_ON_MODE_EEMEM = 6000; //
 
 
 uint8_t triggerPhotoLevel; //
 uint8_t triggerSoundLevel;
-uint8_t WLag; //
+uint16_t WLag; //
 uint8_t HYST;
 uint8_t BRIGHT_LOW;
 uint16_t timer_ON_MODE;
@@ -74,9 +74,9 @@ enum
 };
 
 
-// фильтр первого пор€дка с коэффициентом усилени€ = 256 (иначе на малых сигналах возможна самоблокировка фильтра по ограниченной разр€дности)
+// фильтр первого пор€дка с коэффициентом усилени€ = 4096 (иначе на малых сигналах возможна самоблокировка фильтра по ограниченной разр€дности)
 
-#define WLAG 4095
+//#define WLAG 4095
 #define FILTER_TCONST	4096
 #if 1
 uint8_t filtr_1 (uint8_t in)
@@ -87,7 +87,7 @@ uint8_t filtr_1 (uint8_t in)
 	return out / 256; */
 
 	static uint32_t lastOut=0;
-	uint32_t out = in * (FILTER_TCONST - WLAG) + ((WLAG * lastOut) / FILTER_TCONST);
+	uint32_t out = in * (FILTER_TCONST - WLag) + ((WLag * lastOut) / FILTER_TCONST);
 	lastOut = out;
 	return (uint8_t)(out / FILTER_TCONST); 
 
@@ -291,7 +291,7 @@ inline void init_var(void)
 {
 	triggerPhotoLevel = eeprom_read_byte(&triggerPhotoLevel_EEMEM); // 
 	triggerSoundLevel = eeprom_read_byte(&triggerSoundLevel_EEMEM); // 
-	WLag = eeprom_read_byte(&WLag_EEMEM); // посто€нна€ времени фильтра
+	WLag = eeprom_read_word(&WLag_EEMEM); // посто€нна€ времени фильтра
 	BRIGHT_LOW = eeprom_read_byte(&BRIGHT_LOW_EEMEM); // уровень пониженной €ркости (из максимума = 250)
 	timer_ON_MODE = eeprom_read_word(&timer_ON_MODE_EEMEM); // врем€ удержани€ при срабатывании звука
 	HYST = triggerPhotoLevel/16;	// гистерезис день/ночь
