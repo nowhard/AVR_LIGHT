@@ -18,9 +18,9 @@
 #include <avr/interrupt.h>
 
 
-uint8_t EEMEM triggerPhotoLevel_EEMEM = 70; //
+uint8_t EEMEM triggerPhotoLevel_EEMEM = 180; //
 uint8_t EEMEM triggerSoundLevel_EEMEM = 125;
-uint16_t EEMEM WLag_EEMEM = 4095; //
+uint16_t EEMEM WLag_EEMEM = 4090; //
 uint8_t EEMEM BRIGHT_LOW_EEMEM = 20; //
 uint16_t EEMEM timer_ON_MODE_EEMEM = 6000; //
 
@@ -152,9 +152,6 @@ ISR(TIM0_OVF_vect)
 	uint16_t val;
 
 
-
-
-
 	ms10_timer--;
 	if(ms10_timer == 0)
 	{
@@ -177,7 +174,7 @@ ISR(TIM0_OVF_vect)
 	{
 		photoLevel = adc_photosensor;
 	}
-	photoLevelLPF = filtr_1(photoLevel);
+//	photoLevelLPF = filtr_1(photoLevel);
 
 
 	
@@ -229,6 +226,7 @@ void stateMashine(void)
 {
 	static uint16_t timer = 200;	// POWER_ON mode timer
 	
+//	photoLevelLPF = filtr_1(photoLevel);
 	if(photoLevelLPF > (triggerPhotoLevel + HYST))
 	{	// при освешенности большей порога однозначно выключаем свет из любого режима
 		setLightBright(BRIGHT_0);    // turn the LED off
@@ -273,6 +271,12 @@ void stateMashine(void)
 	    	if(timer)
 			{
 				timer--;
+
+				if(evt.sound)
+				{
+		    		timer = timer_ON_MODE;
+					evt.sound = 0;
+				}
 			}
 			else
 			{
@@ -328,6 +332,12 @@ int main()
 		{
 			stateMashine();
 			evt.ms10 = 0;
+		}
+
+		if(evt.tic)
+		{
+			photoLevelLPF = filtr_1(photoLevel);
+			evt.tic=0;
 		}
 
 		if(findSoundFront()) evt.sound = 1;
