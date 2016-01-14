@@ -16,6 +16,7 @@
 #include <util/delay.h>
 #include <avr/eeprom.h>
 #include <avr/interrupt.h>
+#include "rc5.h"
 
 
 uint8_t EEMEM triggerPhotoLevel_EEMEM = 180; //
@@ -149,7 +150,7 @@ inline uint8_t findSoundFront(void)
 ISR(TIM0_OVF_vect)
 {
 	static uint8_t ms10_timer = MS_10;
-	uint16_t val;
+//	uint16_t val;
 
 
 	ms10_timer--;
@@ -163,7 +164,7 @@ ISR(TIM0_OVF_vect)
     ADMUX|=ADC3;
 	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
 
-	PORTB |= _BV(0);
+	//PORTB |= _BV(0);
 
 	
 	if(adc_photosensor > 255)
@@ -191,7 +192,7 @@ ISR(ADC_vect)
 	{
 		case ADC3:
 		{
-			PORTB &= ~_BV(0);
+			//PORTB &= ~_BV(0);
 			adc_photosensor=ADC;
 
 			mirophone_cycle=0;
@@ -312,6 +313,8 @@ inline void timer_init(void)
 	startT1_div8_fastPWM_B();		// PWM to pin to light control
 }
 
+
+
 inline void ADC_init(void)
 {
 	ADMUX&=~(0x3);
@@ -322,12 +325,24 @@ inline void ADC_init(void)
 int main()
 {
 	init_var();
-	DDRB |=0b00000011;//Led=portB.1
+	//DDRB |=0b00000011;//Led=portB.1
+	DDRB |=0b00000010;//Led=portB.1
 	ADC_init();
+	RC5_interrupt_init();
 	timer_init();
 	sei();
 	while(1)
 	{
+		while(rc5_flag==RC5_MSG_PROCESS);
+
+		//handle rc5
+
+		if(rc5_flag==RC5_MSG_NEW_MSG)
+		{
+			
+			rc5_flag=RC5_MSG_NONE;	
+		}
+		
 		if(evt.ms10)
 		{
 			stateMashine();

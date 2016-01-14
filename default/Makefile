@@ -37,7 +37,7 @@ HEX_EEPROM_FLAGS += --change-section-lma .eeprom=0 --no-change-warnings
 
 
 ## Objects that must be built in order to link
-OBJECTS = main.o 
+OBJECTS = main.o rc5.o 
 
 ## Objects explicitly added by the user
 LINKONLYOBJECTS = 
@@ -47,6 +47,9 @@ all: $(TARGET) testLight.hex testLight.eep testLight.lss size
 
 ## Compile
 main.o: ../main.c
+	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
+
+rc5.o: ../rc5.c
 	$(CC) $(INCLUDES) $(CFLAGS) -c  $<
 
 ##Link
