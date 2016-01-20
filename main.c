@@ -326,7 +326,7 @@ int main()
 {
 	init_var();
 	//DDRB |=0b00000011;//Led=portB.1
-	DDRB |=0b00000010;//Led=portB.1
+	DDRB |=0b00010010;//Led=portB.1
 	ADC_init();
 	RC5_interrupt_init();
 	timer_init();
@@ -335,11 +335,11 @@ int main()
 	{
 		while(rc5_flag==RC5_MSG_PROCESS);
 
-		//handle rc5
+		
 
 		if(rc5_flag==RC5_MSG_NEW_MSG)
 		{
-			
+			//handle rc5
 			rc5_flag=RC5_MSG_NONE;	
 		}
 		
