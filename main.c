@@ -340,6 +340,25 @@ int main()
 		if(rc5_flag==RC5_MSG_NEW_MSG)
 		{
 			//handle rc5
+
+			switch(data.cmd)
+			{
+				case 0x1:
+				{
+					PORTB |= _BV(4);
+				}
+				break;
+
+				case 0x2:
+				{
+					PORTB &= ~_BV(4);
+				}
+				break;
+
+				default:
+				{
+				}
+			}
 			rc5_flag=RC5_MSG_NONE;	
 		}
 		
