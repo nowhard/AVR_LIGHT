@@ -38,7 +38,7 @@ uint16_t adc_microphone,adc_microphone_prev,adc_photosensor;
 
 uint8_t photoLevel, photoLevelLPF;
 
-enum {MODE_OFF, POWER_ON, MODE_NORMAL, MODE_TIMER, MODE_2};
+enum {MODE_OFF, POWER_ON, MODE_NORMAL, MODE_TIMER, MODE_2, MODE_BLINK};
 uint8_t mode = POWER_ON;
 enum {SUBMODE_WORK, SUBMODE_BLINK, SUBMODE_WAIT};
 uint8_t submode = SUBMODE_WORK;
@@ -289,6 +289,22 @@ void stateMashine(void)
 
 		case MODE_2:
 		break;
+
+		case MODE_BLINK:
+		{
+		    if(timer)
+			{
+				timer--;
+				//blink
+			}
+			else
+			{
+		    	setLightBright(BRIGHT_LOW);    // turn the LED to 20%
+				mode = MODE_NORMAL;
+				evt.sound = 0;
+		  	}			
+		}
+		break;
 	}
 }
 
@@ -322,6 +338,122 @@ inline void ADC_init(void)
 	DIDR0|=_BV(ADC1D)|_BV(ADC3D);
 }
 
+#define BRIGHTNESS_MIN_UP	0x1
+#define BRIGHTNESS_MIN_DOWN	0x2
+
+#define BRIGHTNESS_MAX_UP	0x3
+#define BRIGHTNESS_MAX_DOWN	0x4
+
+#define SENSITIVE_BRIGHT_TRESHOLD_UP	0x5
+#define SENSITIVE_BRIGHT_TRESHOLD_DOWN	0x6
+
+#define SENSITIVE_SOUND_TRESHOLD_UP		0x7
+#define SENSITIVE_SOUND_TRESHOLD_DOWN	0x8
+
+//----
+#define BRIGHT_LOW_MIN		10
+#define BRIGHT_LOW_MAX		100
+#define BRIGHT_LOW_STEP		5
+
+#define TRIGGER_PHOTO_LEVEL_MIN		160
+#define TRIGGER_PHOTO_LEVEL_MAX		200
+#define TRIGGER_PHOTO_LEVEL_STEP	5
+
+#define TRIGGER_SOUND_LEVEL_MIN		100
+#define TRIGGER_SOUND_LEVEL_MAX		140
+#define TRIGGER_SOUND_LEVEL_STEP	5
+
+inline void RC5_Handler(void)
+{
+	//while(rc5_flag==RC5_MSG_PROCESS);
+
+	if(rc5_flag==RC5_MSG_NEW_MSG)
+	{
+		//handle rc5
+
+		switch(data.cmd)
+		{
+			case BRIGHTNESS_MIN_UP:
+			{
+				if(BRIGHT_LOW<BRIGHT_LOW_MAX)
+				{
+					BRIGHT_LOW+=BRIGHT_LOW_STEP;
+					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
+					setLightBright(BRIGHT_LOW);    
+					mode = MODE_NORMAL;
+					evt.sound=0;
+				}
+			}
+			break;
+
+			case BRIGHTNESS_MIN_DOWN:
+			{
+				if(BRIGHT_LOW>BRIGHT_LOW_MIN)
+				{
+					BRIGHT_LOW-=BRIGHT_LOW_STEP;
+					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
+					setLightBright(BRIGHT_LOW);    
+					mode = MODE_NORMAL;
+					evt.sound=0;
+				}
+			}
+			break;
+
+			case BRIGHTNESS_MAX_UP:
+			{
+				PORTB |= _BV(4);
+			}
+			break;
+
+			case BRIGHTNESS_MAX_DOWN:
+			{
+				PORTB &= ~_BV(4);
+			}
+			break;
+
+			case SENSITIVE_BRIGHT_TRESHOLD_UP:
+			{
+				if(triggerPhotoLevel<TRIGGER_PHOTO_LEVEL_MAX)
+				{
+					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;
+					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+					//mode = MODE_BLINK;
+				}		
+			}
+			break;
+
+			case SENSITIVE_BRIGHT_TRESHOLD_DOWN:
+			{
+				if(triggerPhotoLevel>TRIGGER_PHOTO_LEVEL_MIN)
+				{
+					triggerPhotoLevel-=TRIGGER_PHOTO_LEVEL_STEP;
+					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+					//mode = MODE_BLINK;
+				}
+				
+			}
+			break;
+
+			case SENSITIVE_SOUND_TRESHOLD_UP:
+			{
+				PORTB |= _BV(4);
+			}
+			break;
+
+			case SENSITIVE_SOUND_TRESHOLD_DOWN:
+			{
+				PORTB &= ~_BV(4);
+			}
+			break;
+
+			default:
+			{
+			}
+		}
+		rc5_flag=RC5_MSG_NONE;	
+	}	
+}
+
 int main()
 {
 	init_var();
@@ -333,35 +465,7 @@ int main()
 	sei();
 	while(1)
 	{
-		while(rc5_flag==RC5_MSG_PROCESS);
-
-		
-
-		if(rc5_flag==RC5_MSG_NEW_MSG)
-		{
-			//handle rc5
-
-			switch(data.cmd)
-			{
-				case 0x1:
-				{
-					PORTB |= _BV(4);
-				}
-				break;
-
-				case 0x2:
-				{
-					PORTB &= ~_BV(4);
-				}
-				break;
-
-				default:
-				{
-				}
-			}
-			rc5_flag=RC5_MSG_NONE;	
-		}
-		
+		RC5_Handler();	
 		if(evt.ms10)
 		{
 			stateMashine();
