@@ -38,7 +38,7 @@ uint16_t adc_microphone,adc_microphone_prev,adc_photosensor;
 
 uint8_t photoLevel, photoLevelLPF;
 
-enum {MODE_OFF, POWER_ON, MODE_NORMAL, MODE_TIMER, MODE_2, MODE_BLINK};
+enum {MODE_OFF, POWER_ON, MODE_NORMAL, MODE_TIMER, MODE_2, MODE_BLINK, MODE_SET_LOW_BRIGHT};
 uint8_t mode = POWER_ON;
 enum {SUBMODE_WORK, SUBMODE_BLINK, SUBMODE_WAIT};
 uint8_t submode = SUBMODE_WORK;
@@ -223,10 +223,12 @@ ISR(ADC_vect)
 	}
 }
 
+
+#define BLINK_PERIOD	50
+#define SET_LOW_BRIGHT_PERIOD	200
+static uint16_t timer = 200;	// POWER_ON mode timer
 void stateMashine(void)
-{
-	static uint16_t timer = 200;	// POWER_ON mode timer
-	
+{	
 //	photoLevelLPF = filtr_1(photoLevel);
 	if(photoLevelLPF > (triggerPhotoLevel + HYST))
 	{	// при освешенности большей порога однозначно выключаем свет из любого режима
@@ -296,6 +298,15 @@ void stateMashine(void)
 			{
 				timer--;
 				//blink
+
+				if(timer>(BLINK_PERIOD>>1))
+				{
+					setLightBright(BRIGHT_LOW);
+				}
+				else
+				{
+					setLightBright(BRIGHT_0); 
+				}
 			}
 			else
 			{
@@ -303,6 +314,22 @@ void stateMashine(void)
 				mode = MODE_NORMAL;
 				evt.sound = 0;
 		  	}			
+		}
+		break;
+
+		case MODE_SET_LOW_BRIGHT:
+		{
+			if(timer)
+			{
+				timer--;
+				setLightBright(BRIGHT_LOW);
+			}
+			else
+			{
+		    	setLightBright(BRIGHT_LOW);    // turn the LED to 20%
+				mode = MODE_NORMAL;
+				evt.sound = 0;				
+			}
 		}
 		break;
 	}
@@ -380,8 +407,9 @@ inline void RC5_Handler(void)
 					BRIGHT_LOW+=BRIGHT_LOW_STEP;
 					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
 					setLightBright(BRIGHT_LOW);    
-					mode = MODE_NORMAL;
+					mode = MODE_SET_LOW_BRIGHT;
 					evt.sound=0;
+					timer=SET_LOW_BRIGHT_PERIOD;
 				}
 			}
 			break;
@@ -393,8 +421,9 @@ inline void RC5_Handler(void)
 					BRIGHT_LOW-=BRIGHT_LOW_STEP;
 					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
 					setLightBright(BRIGHT_LOW);    
-					mode = MODE_NORMAL;
+					mode = MODE_SET_LOW_BRIGHT;
 					evt.sound=0;
+					timer=SET_LOW_BRIGHT_PERIOD;
 				}
 			}
 			break;
@@ -417,7 +446,8 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
-					//mode = MODE_BLINK;
+					timer=BLINK_PERIOD;
+					mode = MODE_BLINK;
 				}		
 			}
 			break;
@@ -428,21 +458,31 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel-=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
-					//mode = MODE_BLINK;
-				}
-				
+					timer=BLINK_PERIOD;
+					mode = MODE_BLINK;
+				}	
 			}
 			break;
 
 			case SENSITIVE_SOUND_TRESHOLD_UP:
 			{
-				PORTB |= _BV(4);
+			    if(triggerSoundLevel<TRIGGER_SOUND_LEVEL_MAX)
+				{
+					triggerSoundLevel+=TRIGGER_SOUND_LEVEL_STEP;
+					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
+					//mode = MODE_BLINK;
+				}
 			}
 			break;
 
 			case SENSITIVE_SOUND_TRESHOLD_DOWN:
 			{
-				PORTB &= ~_BV(4);
+			    if(triggerSoundLevel>TRIGGER_SOUND_LEVEL_MIN)
+				{
+					triggerSoundLevel-=TRIGGER_SOUND_LEVEL_STEP;
+					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
+					//mode = MODE_BLINK;
+				}
 			}
 			break;
 
