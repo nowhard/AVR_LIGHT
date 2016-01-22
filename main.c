@@ -224,7 +224,7 @@ ISR(ADC_vect)
 }
 
 
-#define BLINK_PERIOD	50
+#define BLINK_PERIOD	80
 #define SET_LOW_BRIGHT_PERIOD	200
 static uint16_t timer = 200;	// POWER_ON mode timer
 void stateMashine(void)
@@ -301,11 +301,11 @@ void stateMashine(void)
 
 				if(timer>(BLINK_PERIOD>>1))
 				{
-					setLightBright(BRIGHT_LOW);
+					setLightBright(BRIGHT_0);
 				}
 				else
 				{
-					setLightBright(BRIGHT_0); 
+					setLightBright(BRIGHT_LOW); 
 				}
 			}
 			else
@@ -446,7 +446,10 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
-					timer=BLINK_PERIOD;
+					if(mode != MODE_BLINK)
+					{
+						timer=BLINK_PERIOD;
+					}
 					mode = MODE_BLINK;
 				}		
 			}
@@ -458,7 +461,10 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel-=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
-					timer=BLINK_PERIOD;
+					if(mode != MODE_BLINK)
+					{
+						timer=BLINK_PERIOD;
+					}
 					mode = MODE_BLINK;
 				}	
 			}
@@ -470,8 +476,13 @@ inline void RC5_Handler(void)
 				{
 					triggerSoundLevel+=TRIGGER_SOUND_LEVEL_STEP;
 					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
-					//mode = MODE_BLINK;
+					if(mode != MODE_BLINK)
+					{
+						timer=BLINK_PERIOD;
+					}
+					mode = MODE_BLINK;
 				}
+				PORTB |= _BV(4);
 			}
 			break;
 
@@ -481,8 +492,13 @@ inline void RC5_Handler(void)
 				{
 					triggerSoundLevel-=TRIGGER_SOUND_LEVEL_STEP;
 					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
-					//mode = MODE_BLINK;
+					if(mode != MODE_BLINK)
+					{
+						timer=BLINK_PERIOD;
+					}
+					mode = MODE_BLINK;
 				}
+				PORTB &= ~_BV(4);
 			}
 			break;
 
