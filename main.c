@@ -233,7 +233,7 @@ static uint16_t timer = 200;	// POWER_ON mode timer
 void stateMashine(void)
 {	
 //	photoLevelLPF = filtr_1(photoLevel);
-	if(photoLevelLPF > (triggerPhotoLevel + HYST))
+	if((photoLevelLPF > (triggerPhotoLevel + HYST)) && (mode!=MODE_BLINK)&&(mode!=MODE_SET_LOW_BRIGHT)&&(mode!=MODE_SET_SETTINGS))
 	{	// при освешенности большей порога однозначно выключаем свет из любого режима
 		setLightBright(BRIGHT_0);    // turn the LED off
 		mode = MODE_OFF;
@@ -329,9 +329,12 @@ void stateMashine(void)
 			}
 			else
 			{
-		    	setLightBright(BRIGHT_LOW);    // turn the LED to 20%
+/*		    	setLightBright(BRIGHT_LOW);    // turn the LED to 20%
 				mode = MODE_NORMAL;
-				evt.sound = 0;				
+				evt.sound = 0;*/
+				timer=BLINK_PERIOD;
+				mode = MODE_BLINK;
+				evt.sound = 0;					
 			}
 		}
 		break;
@@ -465,11 +468,12 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+				}
 					
-					settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN)*5;
-					timer=SET_SETTINGS_PERIOD;
-					mode=MODE_SET_SETTINGS;
-				}		
+				settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN+5)*5;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
+		
 			}
 			break;
 
@@ -479,15 +483,12 @@ inline void RC5_Handler(void)
 				{
 					triggerPhotoLevel-=TRIGGER_PHOTO_LEVEL_STEP;
 					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
-/*					if(mode != MODE_BLINK)
-					{
-						timer=BLINK_PERIOD;
-					}
-					mode = MODE_BLINK;*/
-					settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN)*5;
-					timer=SET_SETTINGS_PERIOD;
-					mode=MODE_SET_SETTINGS;
-				}	
+				}
+
+				settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN+5)*5;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
+				
 			}
 			break;
 
@@ -497,16 +498,12 @@ inline void RC5_Handler(void)
 				{
 					triggerSoundLevel+=TRIGGER_SOUND_LEVEL_STEP;
 					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
-				/*	if(mode != MODE_BLINK)
-					{
-						timer=BLINK_PERIOD;
-					}
-					mode = MODE_BLINK;*/
-
-					settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN)*5;
-					timer=SET_SETTINGS_PERIOD;
-					mode=MODE_SET_SETTINGS;
 				}
+
+				settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN+5)*5;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
+				
 				PORTB |= _BV(4);
 			}
 			break;
@@ -517,16 +514,12 @@ inline void RC5_Handler(void)
 				{
 					triggerSoundLevel-=TRIGGER_SOUND_LEVEL_STEP;
 					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
-				/*	if(mode != MODE_BLINK)
-					{
-						timer=BLINK_PERIOD;
-					}
-					mode = MODE_BLINK;*/
-
-					settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN)*5;
-					timer=SET_SETTINGS_PERIOD;
-					mode=MODE_SET_SETTINGS;
 				}
+
+				settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN+5)*5;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
+				
 				PORTB &= ~_BV(4);
 			}
 			break;
