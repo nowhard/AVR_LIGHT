@@ -40,8 +40,16 @@ uint8_t photoLevel, photoLevelLPF;
 
 enum {MODE_OFF, POWER_ON, MODE_NORMAL, MODE_TIMER, MODE_2, MODE_BLINK, MODE_SET_LOW_BRIGHT, MODE_SET_SETTINGS};
 uint8_t mode = POWER_ON;
-/*enum {SUBMODE_WORK, SUBMODE_BLINK, SUBMODE_WAIT};
-uint8_t submode = SUBMODE_WORK;*/
+
+enum
+{
+	SET_NONE,
+	SET_BRIGHTNESS_MIN,
+	SET_SENSITIVE_BRIGHT,
+	SET_SENSITIVE_SOUND	
+};
+
+uint8_t settings_type=SET_NONE;
 
 uint8_t settings_bright=0;
 
@@ -350,7 +358,30 @@ void stateMashine(void)
 			{
 				timer=BLINK_PERIOD;
 				mode = MODE_BLINK;
-				evt.sound = 0;				
+				evt.sound = 0;	
+				
+				switch(settings_type)
+				{
+					case SET_BRIGHTNESS_MIN:
+					{
+						eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
+					}
+					break;
+
+					case SET_SENSITIVE_BRIGHT:
+					{
+						eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+					}
+					break;
+
+					case SET_SENSITIVE_SOUND:
+					{
+						eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
+					}
+					break;	
+				}
+				
+				settings_type=SET_NONE;			
 			}
 		}
 		break;
@@ -412,6 +443,8 @@ inline void ADC_init(void)
 #define TRIGGER_SOUND_LEVEL_MAX		140
 #define TRIGGER_SOUND_LEVEL_STEP	1
 
+
+
 inline void RC5_Handler(void)
 {
 	//while(rc5_flag==RC5_MSG_PROCESS);
@@ -427,12 +460,17 @@ inline void RC5_Handler(void)
 				if(BRIGHT_LOW<BRIGHT_LOW_MAX)
 				{
 					BRIGHT_LOW+=BRIGHT_LOW_STEP;
-					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
-					setLightBright(BRIGHT_LOW);    
-					mode = MODE_SET_LOW_BRIGHT;
-					evt.sound=0;
-					timer=SET_LOW_BRIGHT_PERIOD;
+					settings_type=SET_BRIGHTNESS_MIN;
 				}
+
+			/*	setLightBright(BRIGHT_LOW);    
+				mode = MODE_SET_LOW_BRIGHT;
+				evt.sound=0;
+				timer=SET_LOW_BRIGHT_PERIOD;*/
+
+				settings_bright=BRIGHT_LOW;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
 			}
 			break;
 
@@ -441,12 +479,12 @@ inline void RC5_Handler(void)
 				if(BRIGHT_LOW>BRIGHT_LOW_MIN)
 				{
 					BRIGHT_LOW-=BRIGHT_LOW_STEP;
-					eeprom_write_byte(&BRIGHT_LOW_EEMEM,BRIGHT_LOW);
-					setLightBright(BRIGHT_LOW);    
-					mode = MODE_SET_LOW_BRIGHT;
-					evt.sound=0;
-					timer=SET_LOW_BRIGHT_PERIOD;
+					settings_type=SET_BRIGHTNESS_MIN;
 				}
+
+				settings_bright=BRIGHT_LOW;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
 			}
 			break;
 
@@ -466,8 +504,8 @@ inline void RC5_Handler(void)
 			{
 				if(triggerPhotoLevel<TRIGGER_PHOTO_LEVEL_MAX)
 				{
-					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;
-					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+					triggerPhotoLevel+=TRIGGER_PHOTO_LEVEL_STEP;	
+					settings_type=SET_SENSITIVE_BRIGHT;
 				}
 					
 				settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN+5)*5;
@@ -482,7 +520,7 @@ inline void RC5_Handler(void)
 				if(triggerPhotoLevel>TRIGGER_PHOTO_LEVEL_MIN)
 				{
 					triggerPhotoLevel-=TRIGGER_PHOTO_LEVEL_STEP;
-					eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
+					settings_type=SET_SENSITIVE_BRIGHT;
 				}
 
 				settings_bright=(triggerPhotoLevel-TRIGGER_PHOTO_LEVEL_MIN+5)*5;
@@ -497,7 +535,7 @@ inline void RC5_Handler(void)
 			    if(triggerSoundLevel<TRIGGER_SOUND_LEVEL_MAX)
 				{
 					triggerSoundLevel+=TRIGGER_SOUND_LEVEL_STEP;
-					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
+					settings_type=SET_SENSITIVE_SOUND;
 				}
 
 				settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN+5)*5;
@@ -513,7 +551,7 @@ inline void RC5_Handler(void)
 			    if(triggerSoundLevel>TRIGGER_SOUND_LEVEL_MIN)
 				{
 					triggerSoundLevel-=TRIGGER_SOUND_LEVEL_STEP;
-					eeprom_write_byte(&triggerSoundLevel_EEMEM,triggerSoundLevel);
+					settings_type=SET_SENSITIVE_SOUND;
 				}
 
 				settings_bright=(triggerSoundLevel-TRIGGER_SOUND_LEVEL_MIN+5)*5;
