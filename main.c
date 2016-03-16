@@ -7,7 +7,7 @@
 //#define BRIGHT_MEAS_PERIOD_IN_MS	
 #define BRIGHT_0	(0)
 //#define BRIGHT_LOW	((uint8_t)(220 / 100 *10))
-#define BRIGHT_100	(225)
+#define BRIGHT_100	(247)
 //#define triggerPhotoLevel	(100)
 //#define WLag 254
 
@@ -174,7 +174,7 @@ ISR(TIM0_OVF_vect)
     ADMUX|=ADC3;
 	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
 
-	//PORTB |= _BV(0);
+	PORTB |= _BV(4);///!!!!!!!!!!!!
 
 	
 	if(adc_photosensor > 255)
@@ -202,8 +202,10 @@ ISR(ADC_vect)
 	{
 		case ADC3:
 		{
-			//PORTB &= ~_BV(0);
+			PORTB &= ~_BV(4);//!!!!!!!!!!!!!!!!!!!!!
 			adc_photosensor=ADC;
+
+
 
 			mirophone_cycle=0;
 			ADMUX&=~(0x3);
