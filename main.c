@@ -45,6 +45,7 @@ enum
 {
 	SET_NONE,
 	SET_BRIGHTNESS_MIN,
+	SET_TIME_ON,
 	SET_SENSITIVE_BRIGHT,
 	SET_SENSITIVE_SOUND	
 };
@@ -174,7 +175,7 @@ ISR(TIM0_OVF_vect)
     ADMUX|=ADC3;
 	ADCSRA |= _BV(ADSC); // start ADC conversion (Light from PWM is OFF!)
 
-	PORTB |= _BV(4);///!!!!!!!!!!!!
+	//PORTB |= _BV(4);///!!!!!!!!!!!!
 
 	
 	if(adc_photosensor > 255)
@@ -370,6 +371,12 @@ void stateMashine(void)
 					}
 					break;
 
+					case SET_TIME_ON:
+					{
+						eeprom_write_byte(&timer_ON_MODE_EEMEM, timer_ON_MODE);
+					}
+					break;
+
 					case SET_SENSITIVE_BRIGHT:
 					{
 						eeprom_write_byte(&triggerPhotoLevel_EEMEM,triggerPhotoLevel);
@@ -423,8 +430,11 @@ inline void ADC_init(void)
 #define BRIGHTNESS_MIN_UP	0x1
 #define BRIGHTNESS_MIN_DOWN	0x2
 
-#define BRIGHTNESS_MAX_UP	0x3
-#define BRIGHTNESS_MAX_DOWN	0x4
+//#define BRIGHTNESS_MAX_UP	0x3
+//#define BRIGHTNESS_MAX_DOWN	0x4
+
+#define TIME_MODE_ON_UP		0x3
+#define TIME_MODE_ON_DOWN	0x4
 
 #define SENSITIVE_BRIGHT_TRESHOLD_UP	0x5
 #define SENSITIVE_BRIGHT_TRESHOLD_DOWN	0x6
@@ -444,6 +454,10 @@ inline void ADC_init(void)
 #define TRIGGER_SOUND_LEVEL_MIN		100
 #define TRIGGER_SOUND_LEVEL_MAX		140
 #define TRIGGER_SOUND_LEVEL_STEP	1
+
+#define TIMER_MODE_ON_MIN			1000
+#define TIMER_MODE_ON_MAX			12000
+#define TIMER_MODE_ON_STEP			1000
 
 
 
@@ -490,7 +504,7 @@ inline void RC5_Handler(void)
 			}
 			break;
 
-			case BRIGHTNESS_MAX_UP:
+/*			case BRIGHTNESS_MAX_UP:
 			{
 				PORTB |= _BV(4);
 			}
@@ -499,6 +513,34 @@ inline void RC5_Handler(void)
 			case BRIGHTNESS_MAX_DOWN:
 			{
 				PORTB &= ~_BV(4);
+			}
+			break;*/
+
+			case TIME_MODE_ON_UP:
+			{
+				if(timer_ON_MODE<TIMER_MODE_ON_MAX)
+				{
+					timer_ON_MODE+=TIMER_MODE_ON_STEP;	
+					settings_type=SET_TIME_ON;
+				}
+					
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
+			}
+			break;
+
+			case TIME_MODE_ON_DOWN:
+			{
+				if(timer_ON_MODE>TIMER_MODE_ON_MIN)
+				{
+					timer_ON_MODE-=TIMER_MODE_ON_STEP;	
+					settings_type=SET_TIME_ON;
+				}
+					
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
+				timer=SET_SETTINGS_PERIOD;
+				mode=MODE_SET_SETTINGS;
 			}
 			break;
 
@@ -544,7 +586,7 @@ inline void RC5_Handler(void)
 				timer=SET_SETTINGS_PERIOD;
 				mode=MODE_SET_SETTINGS;
 				
-				PORTB |= _BV(4);
+				//PORTB |= _BV(4);
 			}
 			break;
 
@@ -560,7 +602,7 @@ inline void RC5_Handler(void)
 				timer=SET_SETTINGS_PERIOD;
 				mode=MODE_SET_SETTINGS;
 				
-				PORTB &= ~_BV(4);
+				//PORTB &= ~_BV(4);
 			}
 			break;
 
