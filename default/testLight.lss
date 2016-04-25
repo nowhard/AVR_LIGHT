@@ -861,8 +861,8 @@ inline void timer_init(void)
 					settings_type=SET_TIME_ON;
 				}
 					
-				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
- 466:	00 e3       	ldi	r16, 0x30	; 48
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/50;
+ 466:	02 e3       	ldi	r16, 0x32	; 50
  468:	10 e0       	ldi	r17, 0x00	; 0
 			case TIME_MODE_ON_DOWN:
 			{
@@ -975,7 +975,7 @@ inline void RC5_Handler(void)
  4ea:	d0 92 64 00 	sts	0x0064, r13
 				}
 					
-				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/50;
  4ee:	80 91 71 00 	lds	r24, 0x0071
  4f2:	90 91 72 00 	lds	r25, 0x0072
  4f6:	88 53       	subi	r24, 0x38	; 56

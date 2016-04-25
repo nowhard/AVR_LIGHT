@@ -524,7 +524,7 @@ inline void RC5_Handler(void)
 					settings_type=SET_TIME_ON;
 				}
 					
-				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/50;
 				timer=SET_SETTINGS_PERIOD;
 				mode=MODE_SET_SETTINGS;
 			}
@@ -538,7 +538,7 @@ inline void RC5_Handler(void)
 					settings_type=SET_TIME_ON;
 				}
 					
-				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/48;
+				settings_bright=(timer_ON_MODE-TIMER_MODE_ON_MIN+1200)/50;
 				timer=SET_SETTINGS_PERIOD;
 				mode=MODE_SET_SETTINGS;
 			}
